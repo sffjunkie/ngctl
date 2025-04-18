@@ -36,7 +36,6 @@ def main():
         help="NixOS Garbage Manager",
     )
 
-    subparsers.add_parser("gc", help="Garbage collect")
     list_parser = subparsers.add_parser("list", help="List generations")
     delete_parser = subparsers.add_parser("delete", help="Delete generations")
 
@@ -50,6 +49,8 @@ def main():
     )
     delete_parser.add_argument("-a", "--all", action="store_true", default=False)
     delete_parser.add_argument("-y", "--yes", action="store_true", default=False)
+
+    subparsers.add_parser("gc", help="Garbage collect")
 
     args = parser.parse_args()
 
