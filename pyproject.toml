@@ -1,0 +1,17 @@
+[project]
+name = "nog"
+version = "0.2"
+description = "Add your description here"
+readme = "README.md"
+authors = [{ name = "Simon Kennedy", email = "sffjunkie+code@gmail.com" }]
+requires-python = ">=3.12"
+dependencies = [
+ "rich>=14.0.0",
+]
+
+[project.scripts]
+nog = "nog:main"
+
+[build-system]
+requires = ["flit_core >=3.11,<4"]
+build-backend = "flit_core.buildapi"
