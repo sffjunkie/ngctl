@@ -1,5 +1,5 @@
 {
-  description = "displays script";
+  description = "Nixos management scripts";
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
@@ -67,22 +67,16 @@
           pkgs = nixpkgs.legacyPackages.${system};
         in
         {
-          default = pythonSet.mkVirtualEnv "nog" workspace.deps.default;
+          default = pythonSet.mkVirtualEnv "nog-env" workspace.deps.default;
         }
       );
 
-      apps = forAllSystems (
-        system:
-        let
-          pkgs = nixpkgs.legacyPackages.${system};
-        in
-        {
-          default = {
-            type = "app";
-            program = "${self.packages.${system}.default}/bin/nog";
-          };
-        }
-      );
+      apps = forAllSystems (system: {
+        default = {
+          type = "app";
+          program = "${self.packages.${system}.default}/bin/nog-dev";
+        };
+      });
 
       devShells = forAllSystems (
         system:
@@ -110,7 +104,7 @@
                 LD_LIBRARY_PATH = lib.makeLibraryPath pkgs.pythonManylinuxPackages.manylinux1;
               };
             shellHook = ''
-              unset PYTHONPATH
+              # unset PYTHONPATH
             '';
           };
         }

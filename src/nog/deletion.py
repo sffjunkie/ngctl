@@ -9,16 +9,14 @@ from nog.context import Context
 from nog.generation import generations
 
 
-def delete_generations(
-    context: Context,
-) -> bool:
+def delete_generations(context: Context) -> bool:
     if context.confirm:
         context.console.print(
-            f"[{context.color}]The following generations will be deleted...[/]"
+            f"[{context.prompt_color}]The following generations will be deleted...[/]"
         )
     else:
         context.console.print(
-            f"[{context.color}]Deleting the following generations...[/]"
+            f"[{context.prompt_color}]Deleting the following generations...[/]"
         )
 
     tbl = Table(
@@ -28,22 +26,20 @@ def delete_generations(
         "Kernel Version",
         "Configuration Revision",
         "Specialisation",
-        style=context.color,
-        header_style=context.color,
+        style=context.header_color,
+        header_style=context.header_color,
     )
 
-    data = generations(context.profile_dir, context.older_than)
+    data = generations(context.profile_dir, context.before)
+    sorted_data = sorted(data, key=attrgetter("generation"), reverse=True)
 
-    for item in sorted(data, key=attrgetter("number"), reverse=True):
-        if item.current:
-            tbl.add_row(item.number + " current", *item[1:-1])
-        else:
-            tbl.add_row(*item[:-1])
+    for item in sorted_data[1:]:
+        tbl.add_row(*item.rich_renderables())
 
     context.console.print(tbl)
 
     if context.confirm:
-        prompt = f"[{context.color}]Are you sure you wish to delete them (this requires elevated privileges)?[/]"
+        prompt = f"[{context.prompt_color}]Are you sure you wish to delete them (this requires elevated privileges)?[/]"
 
         confirm_to_delete = Confirm.ask(
             prompt=prompt,
@@ -60,10 +56,10 @@ def delete_generations(
         else:
             args = ["sudo", "nix-collect-garbage"]
 
-        if context.older_than is None:
+        if context.before is None:
             args.append("--delete-old")
         else:
-            args.extend(["--delete-older-than", context.older_than_str])
+            args.extend(["--delete-older-than", context.before_spec])
 
         if not context.dry_run:
             proc = subprocess.run(args)
@@ -71,13 +67,13 @@ def delete_generations(
                 delete_ok = True
             elif args[0] == "pkexec" and proc.returncode == 126:
                 context.console.print(
-                    f"[{context.color}]Generation deletion cancelled by user[/]"
+                    f"[{context.prompt_color}]Generation deletion cancelled by user[/]"
                 )
             elif (args[0] == "pkexec" and proc.returncode == 127) or (
                 args[0] == "sudo" and proc.returncode == 1
             ):
                 context.console.print(
-                    f"[{context.color}]Unable to obtain required privileges to delete generations[/]"
+                    f"[{context.prompt_color}]Unable to obtain required privileges to delete generations[/]"
                 )
         else:
             context.console.print(f'Dry run: Would execute "{" ".join(args)}"')

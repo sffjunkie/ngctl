@@ -11,6 +11,8 @@ class Context(NamedTuple):
     profile_dir: Path
     confirm: bool = True
     dry_run: bool = False
-    older_than_str: str | None = None
-    older_than: datetime | None = None
+    before_spec: str | None = None
+    before: datetime | None = None
+    json: bool = False
     prompt_color: str = "red"
+    header_color: str = "green"

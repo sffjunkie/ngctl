@@ -1,18 +1,13 @@
-from datetime import datetime
+import json
 from operator import attrgetter
 
-from rich.console import Console
 from rich.table import Table
 
 from nog.context import Context
-from nog.delta import older_offset_unit, older_timedelta
 from nog.generation import generations
 
 
-def list_generations(
-    context: Context,
-):
-    c = Console()
+def list_generations(context: Context):
     tbl = Table(
         "Generation",
         "Build Date",
@@ -20,26 +15,16 @@ def list_generations(
         "Kernel Version",
         "Configuration Revision",
         "Specialisation",
+        header_style=context.header_color,
     )
 
-    offset_unit = older_offset_unit(context.older_than)
-    if offset_unit is None:
-        before = None
+    data = generations(context.profile_dir, before=context.before)
+    sorted_data = sorted(data, key=attrgetter("generation"), reverse=True)
+
+    if context.json:
+        print(json.dumps([g._asdict() for g in sorted_data]))
     else:
-        offset, unit = offset_unit
+        for item in sorted_data:
+            tbl.add_row(*item.rich_renderables())
 
-        dt = older_timedelta(offset, unit)
-        if dt is not None:
-            before = datetime.now() - dt
-        else:
-            before = None
-
-    data = generations(context.profile_dir, before)
-
-    for item in sorted(data, key=attrgetter("number"), reverse=True):
-        if item.current:
-            tbl.add_row(item.number + " current", *item[1:-1])
-        else:
-            tbl.add_row(*item[:-1])
-
-    c.print(tbl)
+        context.console.print(tbl)

@@ -1,5 +1,5 @@
 import re
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import NamedTuple
 
@@ -9,13 +9,26 @@ LINK_MATCH_RE = r"system-(\d+)-link"
 
 
 class Generation(NamedTuple):
-    number: int
-    build_date: str
-    nixos_version: str
-    kernel_version: str
-    configuration_revision: str
+    generation: int
+    date: str
+    nixosVersion: str
+    kernelVersion: str
+    configurationRevision: str
     specialisations: str
     current: bool
+
+    def rich_renderables(self):
+        items = []
+        if self.current:
+            items.append(f"{self.generation} current")
+        else:
+            items.append(str(self.generation))
+        items.append(self.date)
+        items.append(self.nixosVersion)
+        items.append(self.kernelVersion)
+        items.append(self.configurationRevision)
+        items.append(",".join(self.specialisations))
+        return items
 
 
 def generations(
@@ -24,16 +37,18 @@ def generations(
 ) -> list[Generation]:
     current_system = (profile_dir / "system").readlink().name
     m = re.match(LINK_MATCH_RE, current_system)
-    current_generation_number = m.group(1)
+    current_generation_number = int(m.group(1))
 
     data = []
     for generation_dir in profile_dir.glob("*"):
         if (m := re.match(LINK_MATCH_RE, str(generation_dir.name))) is not None:
-            build_date = datetime.fromtimestamp(generation_dir.stat().st_ctime)
+            build_date = datetime.fromtimestamp(
+                generation_dir.stat().st_ctime, tz=timezone.utc
+            )
             if before is not None and build_date >= before:
                 continue
 
-            generation_number = m.group(1)
+            generation_number = int(m.group(1))
 
             nixos_version_file = generation_dir / "nixos-version"
             if nixos_version_file.exists():
@@ -68,12 +83,12 @@ def generations(
 
             data.append(
                 Generation(
-                    number=generation_number,
-                    build_date=build_date.strftime("%Y-%m-%d %H:%M:%S"),
-                    nixos_version=nixos_version,
-                    kernel_version=kernel_version,
-                    configuration_revision=configuration_revision,
-                    specialisations=",".join(specialisations),
+                    generation=generation_number,
+                    date=build_date.isoformat(timespec="seconds"),
+                    nixosVersion=nixos_version,
+                    kernelVersion=kernel_version,
+                    configurationRevision=configuration_revision,
+                    specialisations=specialisations,
                     current=current_generation_number == generation_number,
                 )
             )
