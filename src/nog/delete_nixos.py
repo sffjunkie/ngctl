@@ -9,7 +9,7 @@ from nog.context import Context
 from nog.generation import generations
 
 
-def delete_generations(context: Context) -> bool:
+def delete_nixos_generations(context: Context) -> bool:
     if context.confirm:
         context.console.print(
             f"[{context.prompt_color}]The following generations will be deleted...[/]"
@@ -30,7 +30,7 @@ def delete_generations(context: Context) -> bool:
         header_style=context.header_color,
     )
 
-    data = generations(context.profile_dir, context.before)
+    data = generations(context.system_profile_dir, context.older)
     sorted_data = sorted(data, key=attrgetter("generation"), reverse=True)
 
     for item in sorted_data[1:]:
@@ -39,32 +39,40 @@ def delete_generations(context: Context) -> bool:
     context.console.print(tbl)
 
     if context.confirm:
-        prompt = f"[{context.prompt_color}]Are you sure you wish to delete them (this requires elevated privileges)?[/]"
+        prompt = f"[{context.prompt_color}]Are you sure you wish to delete them "
+        if context.user_id != 0:
+            prompt += "(this requires elevated privileges) "
+        prompt += "?[/]"
 
-        confirm_to_delete = Confirm.ask(
+        ok_to_delete = Confirm.ask(
             prompt=prompt,
             console=context.console,
             default=False,
         )
     else:
-        confirm_to_delete = True
+        ok_to_delete = True
 
-    delete_ok = False
-    if confirm_to_delete:
-        if command_exists("pkexec"):
-            args = ["pkexec", "nix-collect-garbage"]
+    deleted_ok = False
+    if ok_to_delete:
+        if context.user_id != 0:
+            if command_exists("pkexec"):
+                elevate = "pkexec"
+            else:
+                elevate = "sudo"
+
+            args = [elevate, "nix-collect-garbage"]
         else:
-            args = ["sudo", "nix-collect-garbage"]
+            args = ["nix-collect-garbage"]
 
-        if context.before is None:
+        if context.older_spec is None:
             args.append("--delete-old")
         else:
-            args.extend(["--delete-older-than", context.before_spec])
+            args.extend(["--delete-older-than", context.older_spec])
 
         if not context.dry_run:
             proc = subprocess.run(args)
             if proc.returncode == 0:
-                delete_ok = True
+                deleted_ok = True
             elif args[0] == "pkexec" and proc.returncode == 126:
                 context.console.print(
                     f"[{context.prompt_color}]Generation deletion cancelled by user[/]"
@@ -78,4 +86,4 @@ def delete_generations(context: Context) -> bool:
         else:
             context.console.print(f'Dry run: Would execute "{" ".join(args)}"')
 
-    return delete_ok
+    return deleted_ok
