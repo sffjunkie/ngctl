@@ -1,3 +1,5 @@
+import os
+import pwd
 import logging
 from pathlib import Path
 from typing import Annotated
@@ -8,8 +10,6 @@ from rich.console import Console
 from nog.context import Context
 from nog.cli import listing
 from nog.cli import deletion
-
-PROFILE_DIR = Path("/nix/var/nix/profiles")
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(encoding="utf-8", level=logging.WARNING)
@@ -38,9 +38,15 @@ def main(
         else:
             prompt_color = "red"
 
+    uid = os.getuid()
+    name = pwd.getpwuid(uid).pw_name
+
     context = Context(
+        user_id=uid,
+        user_name=name,
         console=Console(),
-        profile_dir=PROFILE_DIR,
+        system_profile_dir=Path("/nix/var/nix/profiles/"),
+        hm_profile_dir=Path("~/.local/state/nix/profiles"),
         dry_run=dry_run,
         header_color=header_color,
         prompt_color=prompt_color,

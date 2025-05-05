@@ -7,12 +7,16 @@ from rich.console import Console
 
 
 class Context(NamedTuple):
+    user_id: int
+    user_name: str
     console: Console
-    profile_dir: Path
+    system_profile_dir: Path
+    hm_profile_dir: Path
+    privilege_elevation: str = "pkexec"
     confirm: bool = True
     dry_run: bool = False
-    before_spec: str | None = None
-    before: datetime | None = None
+    older_spec: str | None = None
+    older: datetime | None = None
     json: bool = False
     prompt_color: str = "red"
     header_color: str = "green"

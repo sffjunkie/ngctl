@@ -1,8 +1,9 @@
 import typer
 from typing import Annotated
 
-from nog.delta import before_dt
-from nog.deletion import delete_generations
+from nog.delta import older_dt
+from nog.delete_nixos import delete_nixos_generations
+# from nog.delete_hm import delete_hm_generations
 
 app = typer.Typer()
 
@@ -10,23 +11,35 @@ app = typer.Typer()
 @app.command()
 def delete(
     ctx: typer.Context,
-    before: Annotated[
+    older_spec: Annotated[
         str | None,
         typer.Option(
-            "--before",
-            "-b",
+            "--older",
+            "-o",
             metavar="DATE_SPEC",
-            help="Only delete generations before DATE_SPEC e.g. 10d. If not specified all previous generations will be deleted.",
+            help="""\bOnly delete generations older than DATE_SPEC e.g. 10d.
+            If not specified all previous generations will be deleted.""",
             show_default=False,
         ),
     ] = None,
+    pe: Annotated[
+        str | None,
+        typer.Option(
+            "--privilege-elevation",
+            "-p",
+            help="Command to elevate privileges (if not root).",
+            metavar="CMD",
+        ),
+    ] = "pkexec",
     yes: Annotated[
         bool, typer.Option("--yes", "-y", help="Automatically accept prompts")
     ] = False,
 ):
     """Delete generations"""
     context = ctx.obj["context"]._replace(
-        before=before_dt(before),
+        privelege_elevation=pe,
+        older_spec=older_spec,
+        older=older_dt(older_spec),
         confirm=not yes,
     )
-    delete_generations(context)
+    delete_nixos_generations(context)

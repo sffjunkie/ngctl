@@ -74,7 +74,7 @@
       apps = forAllSystems (system: {
         default = {
           type = "app";
-          program = "${self.packages.${system}.default}/bin/nog-dev";
+          program = "${self.packages.${system}.default}/bin/nog";
         };
       });
 
@@ -104,7 +104,7 @@
                 LD_LIBRARY_PATH = lib.makeLibraryPath pkgs.pythonManylinuxPackages.manylinux1;
               };
             shellHook = ''
-              # unset PYTHONPATH
+              unset PYTHONPATH
             '';
           };
         }

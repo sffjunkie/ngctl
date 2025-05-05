@@ -3,7 +3,7 @@ import subprocess
 
 
 def command_exists(command: str) -> bool:
-    proc = subprocess.run(["command", "-v", command])
+    proc = subprocess.run(["command", "-v", command], shell=True)
     ok = proc.returncode == 0
     if ok == 0:
         logging.debug(f"Command `{command}' found.")

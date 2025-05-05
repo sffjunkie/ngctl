@@ -8,7 +8,7 @@ requires-python = ">=3.12"
 dependencies = ["rich>=14.0.0", "typer>=0.15.2"]
 
 [project.scripts]
-nog-dev = "nog.cli.main:app"
+nog = "nog.cli.main:app"
 
 [build-system]
 requires = ["flit_core >=3.11,<4"]

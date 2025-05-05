@@ -1,8 +1,8 @@
 import typer
 from typing import Annotated
 
-from nog.delta import before_dt
-from nog.listing import list_generations
+from nog.delta import older_dt
+from nog.nixos.listing import list_generations
 
 app = typer.Typer()
 
@@ -10,13 +10,14 @@ app = typer.Typer()
 @app.command()
 def list(
     ctx: typer.Context,
-    before: Annotated[
+    older_spec: Annotated[
         str | None,
         typer.Option(
-            "--before",
-            "-b",
+            "--older",
+            "-o",
             metavar="DATE_SPEC",
-            help="Only list generations before DATE_SPEC e.g. 10d. If not specified all generations will be listed.",
+            help="""\bOnly delete generations older than DATE_SPEC e.g. 10d.
+            If not specified all previous generations will be deleted.""",
             show_default=False,
         ),
     ] = None,
@@ -32,7 +33,8 @@ def list(
     """List Generations"""
 
     context = ctx.obj["context"]._replace(
-        before=before_dt(before),
+        older_spec=older_spec,
+        older=older_dt(older_spec),
         json=as_json,
     )
     list_generations(context)

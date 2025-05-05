@@ -1,17 +1,17 @@
 import logging
 import re
-from datetime import timedelta, datetime
+from datetime import timedelta, datetime, timezone
 
 BEFORE_RE = r"([+-]?[0-9]+)([dw])"
 
 logger = logging.getLogger(__name__)
 
 
-def before_offset_unit(before: str | None) -> tuple[int, str] | None:
-    if before is None:
+def older_offset_unit(older: str | None) -> tuple[int, str] | None:
+    if older is None:
         return None
 
-    m = re.match(BEFORE_RE, before)
+    m = re.match(BEFORE_RE, older)
     if m is None:
         return None
 
@@ -25,7 +25,7 @@ def before_offset_unit(before: str | None) -> tuple[int, str] | None:
     return (offset, unit)
 
 
-def before_timedelta(offset: str, unit: str) -> timedelta | None:
+def older_timedelta(offset: str, unit: str) -> timedelta | None:
     if unit == "d":
         return timedelta(days=offset)
     elif unit == "w":
@@ -35,16 +35,17 @@ def before_timedelta(offset: str, unit: str) -> timedelta | None:
         return None
 
 
-def before_dt(before_spec: str) -> datetime | None:
-    offset_unit = before_offset_unit(before_spec)
+def older_dt(older_spec: str) -> datetime | None:
+    offset_unit = older_offset_unit(older_spec)
     if offset_unit is None:
         older_than = None
     else:
         offset, unit = offset_unit
 
-        dt = before_timedelta(offset, unit)
+        dt = older_timedelta(offset, unit)
         if dt is not None:
-            older_than = datetime.now() - dt
+            older_than = datetime.now(tz=timezone.utc) - dt
+            print(older_than)
         else:
             older_than = None
 

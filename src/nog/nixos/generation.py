@@ -5,10 +5,10 @@ from typing import NamedTuple
 
 from nog.command import command_output
 
-LINK_MATCH_RE = r"system-(\d+)-link"
+SYSTEM_GENERATION_LINK_RE = r"system-(\d+)-link"
 
 
-class Generation(NamedTuple):
+class SystemGeneration(NamedTuple):
     generation: int
     date: str
     nixosVersion: str
@@ -31,21 +31,23 @@ class Generation(NamedTuple):
         return items
 
 
-def generations(
+def system_generations(
     profile_dir: Path,
-    before: datetime | None = None,
-) -> list[Generation]:
+    older: datetime | None = None,
+) -> list[SystemGeneration]:
     current_system = (profile_dir / "system").readlink().name
-    m = re.match(LINK_MATCH_RE, current_system)
+    m = re.match(SYSTEM_GENERATION_LINK_RE, current_system)
     current_generation_number = int(m.group(1))
 
     data = []
     for generation_dir in profile_dir.glob("*"):
-        if (m := re.match(LINK_MATCH_RE, str(generation_dir.name))) is not None:
+        if (
+            m := re.match(SYSTEM_GENERATION_LINK_RE, str(generation_dir.name))
+        ) is not None:
             build_date = datetime.fromtimestamp(
                 generation_dir.stat().st_ctime, tz=timezone.utc
             )
-            if before is not None and build_date >= before:
+            if older is not None and build_date >= older:
                 continue
 
             generation_number = int(m.group(1))
@@ -82,7 +84,7 @@ def generations(
                 specialisations = [s for s in specialisations_dirs if s.is_dir]
 
             data.append(
-                Generation(
+                SystemGeneration(
                     generation=generation_number,
                     date=build_date.isoformat(timespec="seconds"),
                     nixosVersion=nixos_version,

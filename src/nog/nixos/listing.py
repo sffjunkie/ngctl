@@ -18,7 +18,7 @@ def list_generations(context: Context):
         header_style=context.header_color,
     )
 
-    data = generations(context.profile_dir, before=context.before)
+    data = generations(context.system_profile_dir, older=context.older)
     sorted_data = sorted(data, key=attrgetter("generation"), reverse=True)
 
     if context.json:
