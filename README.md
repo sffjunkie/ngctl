@@ -1,1 +1,1 @@
-# ngctl - Nixos Garbage
+# ngctl - Nixos Generation Control
