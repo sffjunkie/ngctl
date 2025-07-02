@@ -1,1 +1,1 @@
-# ngctl - Nixos Generation Control
+# ngctl - Nix Generation Control
