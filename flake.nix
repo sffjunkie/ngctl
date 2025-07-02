@@ -75,6 +75,11 @@
         default = {
           type = "app";
           program = "${self.packages.${system}.default}/bin/ngctl";
+          meta = {
+            description = "Nix Generation Control";
+            homepage = "https://github.com/sffjunkie/ngctl";
+            license = lib.licenses.asl20;
+          };
         };
       });
 
