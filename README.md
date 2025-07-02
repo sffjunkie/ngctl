@@ -1,1 +1,1 @@
-# nog - Nixos Garbage
+# ngctl - Nixos Garbage

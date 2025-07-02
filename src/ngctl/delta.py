@@ -25,7 +25,7 @@ def older_offset_unit(older: str | None) -> tuple[int, str] | None:
     return (offset, unit)
 
 
-def older_timedelta(offset: str, unit: str) -> timedelta | None:
+def older_timedelta(offset: float, unit: str) -> timedelta | None:
     if unit == "d":
         return timedelta(days=offset)
     elif unit == "w":
@@ -42,7 +42,7 @@ def older_dt(older_spec: str) -> datetime | None:
     else:
         offset, unit = offset_unit
 
-        dt = older_timedelta(offset, unit)
+        dt = older_timedelta(float(offset), unit)
         if dt is not None:
             older_than = datetime.now(tz=timezone.utc) - dt
             print(older_than)

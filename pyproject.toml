@@ -1,5 +1,5 @@
 [project]
-name = "nog"
+name = "ngctl"
 version = "0.2"
 description = "Nixos Generations Management"
 readme = "README.md"
@@ -8,7 +8,7 @@ requires-python = ">=3.12"
 dependencies = ["rich>=14.0.0", "typer>=0.15.2"]
 
 [project.scripts]
-nog = "nog.cli.main:app"
+ngctl = "ngctl.cli.main:app"
 
 [build-system]
 requires = ["flit_core >=3.11,<4"]

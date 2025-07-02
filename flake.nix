@@ -67,14 +67,14 @@
           pkgs = nixpkgs.legacyPackages.${system};
         in
         {
-          default = pythonSet.mkVirtualEnv "nog-env" workspace.deps.default;
+          default = pythonSet.mkVirtualEnv "ngctl-env" workspace.deps.default;
         }
       );
 
       apps = forAllSystems (system: {
         default = {
           type = "app";
-          program = "${self.packages.${system}.default}/bin/nog";
+          program = "${self.packages.${system}.default}/bin/ngctl";
         };
       });
 

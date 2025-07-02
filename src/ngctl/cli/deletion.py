@@ -1,15 +1,15 @@
 import typer
 from typing import Annotated
 
-from nog.delta import older_dt
-from nog.delete_nixos import delete_nixos_generations
-# from nog.delete_hm import delete_hm_generations
+from ngctl.delta import older_dt
+from ngctl.nixos.delete import delete_nixos_generations
+# from ngctl.hm.delete import delete_hm_generations
 
 app = typer.Typer()
 
 
 @app.command()
-def delete(
+def rm(
     ctx: typer.Context,
     older_spec: Annotated[
         str | None,
@@ -17,7 +17,7 @@ def delete(
             "--older",
             "-o",
             metavar="DATE_SPEC",
-            help="""\bOnly delete generations older than DATE_SPEC e.g. 10d.
+            help="""\bOnly remove generations older than DATE_SPEC e.g. 10d.
             If not specified all previous generations will be deleted.""",
             show_default=False,
         ),
@@ -35,7 +35,7 @@ def delete(
         bool, typer.Option("--yes", "-y", help="Automatically accept prompts")
     ] = False,
 ):
-    """Delete generations"""
+    """Remove generations"""
     context = ctx.obj["context"]._replace(
         privelege_elevation=pe,
         older_spec=older_spec,

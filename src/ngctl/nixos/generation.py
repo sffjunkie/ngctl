@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import NamedTuple
 
-from nog.command import command_output
+from ngctl.command import command_output
 
 SYSTEM_GENERATION_LINK_RE = r"system-(\d+)-link"
 
@@ -36,7 +36,8 @@ def system_generations(
     older: datetime | None = None,
 ) -> list[SystemGeneration]:
     current_system = (profile_dir / "system").readlink().name
-    m = re.match(SYSTEM_GENERATION_LINK_RE, current_system)
+    if (m := re.match(SYSTEM_GENERATION_LINK_RE, current_system)) is None:
+        return []
     current_generation_number = int(m.group(1))
 
     data = []

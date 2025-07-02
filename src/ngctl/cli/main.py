@@ -7,9 +7,9 @@ import typer
 
 from rich.console import Console
 
-from nog.context import Context
-from nog.cli import listing
-from nog.cli import deletion
+from ngctl.context import Context
+from ngctl.cli import listing
+from ngctl.cli import deletion
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(encoding="utf-8", level=logging.WARNING)

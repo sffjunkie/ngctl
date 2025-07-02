@@ -45,7 +45,7 @@ wheels = [
 ]
 
 [[package]]
-name = "nog"
+name = "ngctl"
 version = "0.2"
 source = { editable = "." }
 dependencies = [

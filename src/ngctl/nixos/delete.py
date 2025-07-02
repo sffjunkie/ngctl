@@ -4,9 +4,9 @@ from operator import attrgetter
 from rich.prompt import Confirm
 from rich.table import Table
 
-from nog.command import command_exists
-from nog.context import Context
-from nog.generation import generations
+from ngctl.command import command_exists
+from ngctl.context import Context
+from ngctl.nixos.generation import system_generations
 
 
 def delete_nixos_generations(context: Context) -> bool:
@@ -30,7 +30,7 @@ def delete_nixos_generations(context: Context) -> bool:
         header_style=context.header_color,
     )
 
-    data = generations(context.system_profile_dir, context.older)
+    data = system_generations(context.system_profile_dir, context.older)
     sorted_data = sorted(data, key=attrgetter("generation"), reverse=True)
 
     for item in sorted_data[1:]:
@@ -81,7 +81,7 @@ def delete_nixos_generations(context: Context) -> bool:
                 args[0] == "sudo" and proc.returncode == 1
             ):
                 context.console.print(
-                    f"[{context.prompt_color}]Unable to obtain required privileges to delete generations[/]"
+                    f"[{context.prompt_color}]Unable to obtain required privileges to remove generations[/]"
                 )
         else:
             context.console.print(f'Dry run: Would execute "{" ".join(args)}"')

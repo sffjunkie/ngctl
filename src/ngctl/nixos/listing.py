@@ -3,8 +3,8 @@ from operator import attrgetter
 
 from rich.table import Table
 
-from nog.context import Context
-from nog.generation import generations
+from ngctl.context import Context
+from ngctl.nixos.generation import system_generations
 
 
 def list_generations(context: Context):
@@ -18,7 +18,7 @@ def list_generations(context: Context):
         header_style=context.header_color,
     )
 
-    data = generations(context.system_profile_dir, older=context.older)
+    data = system_generations(context.system_profile_dir, older=context.older)
     sorted_data = sorted(data, key=attrgetter("generation"), reverse=True)
 
     if context.json:
