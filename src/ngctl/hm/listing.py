@@ -4,21 +4,18 @@ from operator import attrgetter
 from rich.table import Table
 
 from ngctl.context import Context
-from ngctl.nixos.generation import system_generations
+from ngctl.hm.generation import hm_generations
 
 
-def system_list_generations(context: Context):
+def hm_list_generations(context: Context):
     tbl = Table(
         "Generation",
         "Build Date",
-        "NixOS Version",
-        "Kernel Version",
-        "Configuration Revision",
-        "Specialisation",
+        "Home-Manager Version",
         header_style=context.header_color,
     )
 
-    data = system_generations(context.system_profile_dir, older=context.older)
+    data = hm_generations(context.user_profile_dir, older=context.older)
     sorted_data = sorted(data, key=attrgetter("generation"), reverse=True)
 
     if context.json:

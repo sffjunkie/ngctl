@@ -11,7 +11,7 @@ class Context(NamedTuple):
     user_name: str
     console: Console
     system_profile_dir: Path
-    hm_profile_dir: Path
+    user_profile_dir: Path
     privilege_elevation: str = "pkexec"
     confirm: bool = True
     dry_run: bool = False

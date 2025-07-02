@@ -35,7 +35,10 @@ def older_timedelta(offset: float, unit: str) -> timedelta | None:
         return None
 
 
-def older_dt(older_spec: str) -> datetime | None:
+def older_dt(older_spec: str | None) -> datetime | None:
+    if older_spec is None:
+        return None
+
     offset_unit = older_offset_unit(older_spec)
     if offset_unit is None:
         older_than = None

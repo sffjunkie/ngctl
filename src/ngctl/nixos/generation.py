@@ -14,7 +14,7 @@ class SystemGeneration(NamedTuple):
     nixosVersion: str
     kernelVersion: str
     configurationRevision: str
-    specialisations: str
+    specialisations: list[str]
     current: bool
 
     def rich_renderables(self):
@@ -82,7 +82,7 @@ def system_generations(
             if len(specialisations_dirs) == 0:
                 specialisations = ["*"]
             else:
-                specialisations = [s for s in specialisations_dirs if s.is_dir]
+                specialisations = [str(s) for s in specialisations_dirs if s.is_dir]
 
             data.append(
                 SystemGeneration(

@@ -46,7 +46,7 @@ def main(
         user_name=name,
         console=Console(),
         system_profile_dir=Path("/nix/var/nix/profiles/"),
-        hm_profile_dir=Path("~/.local/state/nix/profiles"),
+        user_profile_dir=Path("~/.local/state/nix/profiles").expanduser(),
         dry_run=dry_run,
         header_color=header_color,
         prompt_color=prompt_color,
