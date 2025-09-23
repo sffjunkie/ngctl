@@ -37,7 +37,7 @@ def rm(
 ):
     """Remove generations"""
     context = ctx.obj["context"]._replace(
-        privelege_elevation=pe,
+        privilege_elevation=pe,
         older_spec=older_spec,
         older=older_dt(older_spec),
         confirm=not yes,
