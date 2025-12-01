@@ -9,12 +9,12 @@ from ngctl.nixos.generation import system_generations
 
 def system_list_generations(context: Context):
     tbl = Table(
-        "Generation",
-        "Build Date",
-        "NixOS Version",
-        "Kernel Version",
-        "Configuration Revision",
-        "Specialisation",
+        "Generation\n",
+        "Build\nDate",
+        "NixOS\nVersion",
+        "Kernel\nVersion",
+        "Configuration\nRevision",
+        "Specialisation\n",
         header_style=context.header_color,
     )
 

@@ -9,9 +9,9 @@ from ngctl.hm.generation import hm_generations
 
 def hm_list_generations(context: Context):
     tbl = Table(
-        "Generation",
-        "Build Date",
-        "Home-Manager Version",
+        "Generation\n",
+        "Build\nDate",
+        "Home-Manager\nVersion",
         header_style=context.header_color,
     )
 
