@@ -1,6 +1,6 @@
 [project]
 name = "ngctl"
-version = "0.2"
+version = "0.3"
 description = "Nixos Generations Management"
 readme = "README.md"
 authors = [{ name = "Simon Kennedy", email = "sffjunkie+code@gmail.com" }]
