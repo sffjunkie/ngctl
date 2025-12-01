@@ -60,7 +60,7 @@ def system_generations(
             else:
                 nixos_version = "Unknown"
 
-            kernel_dir = ((generation_dir / "kernel").readlink()).parent
+            kernel_dir = (generation_dir / "kernel-modules").readlink()
             kernel_module_dir = kernel_dir / "lib" / "modules"
             if kernel_module_dir.exists():
                 kernel_version = tuple(kernel_module_dir.glob("*"))[0].name
